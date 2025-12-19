@@ -9,6 +9,7 @@ const Login = ({ setUser }) => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_BASE = import.meta.env.VITE_API_URL;
 
 
   const handleChange = (element) => {
@@ -18,7 +19,7 @@ const Login = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/users/login", formData);
+      const res = await axios.post(`${API_BASE}/api/users/login`, formData);
       localStorage.setItem("token", res.data.token);
       setUser(res.data);
       navigate('/');
@@ -52,7 +53,7 @@ const Login = ({ setUser }) => {
               placeholder='Enter your password' 
               onChange={handleChange}
               value={formData.password} 
-              autocomplete="current-password"
+              autoComplete="current-password"
               className='outline-0 border-2 rounded-md py-0.5 px-1' 
               required/>
             </div>

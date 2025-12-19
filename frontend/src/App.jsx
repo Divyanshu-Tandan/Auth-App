@@ -10,13 +10,14 @@ function App() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(true);
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
       if(token) {
         try {
-          const res = await axios.get('/api/users/me', {
+          const res = await axios.get(`${API_BASE}/api/users/me`, {
             headers: { Authorization: `Bearer ${token}` }
           })
           setUser(res.data);

@@ -10,6 +10,7 @@ const Register = ({ setUser }) => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_BASE = import.meta.env.VITE_API_URL;
 
 
   const handleChange = (element) => {
@@ -19,7 +20,7 @@ const Register = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/users/register", formData);
+      const res = await axios.post(`${API_BASE}/api/users/register`, formData);
       localStorage.setItem("token", res.data.token);
       setUser(res.data);
       navigate('/');
