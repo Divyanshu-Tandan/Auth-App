@@ -1,21 +1,20 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = ({ setUser }) => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    password: ""
+    password: "",
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const API_BASE = import.meta.env.VITE_API_URL;
 
-
-  const handleChange = (element) => {
-    setFormData({ ...formData, [element.target.name]: element.target.value });
-  }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,57 +22,86 @@ const Register = ({ setUser }) => {
       const res = await axios.post(`${API_BASE}/api/users/register`, formData);
       localStorage.setItem("token", res.data.token);
       setUser(res.data);
-      navigate('/');
+      navigate("/");
+    } catch (error) {
+      setError(error.response?.data?.message || "Registration Failed");
     }
-    catch(error) {
-      setError(error.response?.data?.message || "Registeration Failed")
-    }
-  }
+  };
+
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-100'>
-      <div className='bg-white p-8 rounded-lg shadow-lg min-w-1/4'>
-        <h2 className='font-bold text-2xl text-[#5f259f] mb-4 text-center'>Register Form</h2>
-        <form action="" onSubmit={handleSubmit}>
-          <div className='flex flex-col gap-3'>
-            <div className='flex flex-col gap-0.5 text-[#5f259f]'>
-              <label htmlFor="username">Username:</label>
-              <input 
-              type="text" 
-              name='username' 
-              placeholder='Enter your username' 
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
+
+      {/* Animated Blobs */}
+      <div className="absolute w-105 h-105 bg-emerald-500/40 blur-[120px] rounded-full animate-blob top-1/4 left-1/4" />
+      <div className="absolute w-75 h-75 bg-emerald-400/30 blur-[120px] rounded-full animate-blob animation-delay-2000 bottom-1/4 right-1/4" />
+
+      {/* Grid Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[60px_60px] opacity-30" />
+
+      {/* Register Card */}
+      <div className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-10 shadow-[0_0_80px_rgba(16,185,129,0.25)] animate-fadeInUp">
+
+        <h2 className="text-3xl font-semibold text-center mb-6">
+          <span className="text-emerald-400">Create</span> Account
+        </h2>
+
+        {error && (
+          <p className="text-red-400 text-sm text-center mb-4">
+            {error}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-300">Username</label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter your username"
               onChange={handleChange}
-              value={formData.username} 
-              className='outline-0 border-2 rounded-md py-0.5 px-1' 
-              required/>
-            </div>
-            <div className='flex flex-col gap-0.5 text-[#5f259f]'>
-              <label htmlFor="email">Email:</label>
-              <input 
-              type="email" 
-              name='email' 
-              placeholder='Enter your email' 
-              onChange={handleChange}
-              value={formData.email} 
-              className='outline-0 border-2 rounded-md py-0.5 px-1' 
-              required/>
-            </div>
-            <div className='flex flex-col gap-0.5 text-[#5f259f] mb-4'>
-              <label htmlFor="password">Password:</label>
-              <input 
-              type="password" 
-              name='password' 
-              placeholder='Enter your password' 
-              onChange={handleChange}
-              value={formData.password} 
-              className='outline-0 border-2 rounded-md py-0.5 px-1' 
-              required/>
-            </div>
+              value={formData.username}
+              className="bg-black/40 border border-white/20 rounded-md px-3 py-2 outline-none focus:border-emerald-400 transition"
+              required
+            />
           </div>
-          <button className='w-full text-white bg-[#5f259f] px-0.5 py-1 rounded-md cursor-pointer'>Register</button>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-300">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              onChange={handleChange}
+              value={formData.email}
+              className="bg-black/40 border border-white/20 rounded-md px-3 py-2 outline-none focus:border-emerald-400 transition"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-300">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Create a password"
+              onChange={handleChange}
+              value={formData.password}
+              className="bg-black/40 border border-white/20 rounded-md px-3 py-2 outline-none focus:border-emerald-400 transition"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 hover:bg-emerald-500/30 transition cursor-pointer"
+          >
+            Register
+          </button>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
