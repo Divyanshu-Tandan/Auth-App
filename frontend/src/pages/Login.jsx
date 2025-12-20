@@ -1,9 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
@@ -41,9 +38,6 @@ const Login = ({ setUser }) => {
       setLoading(false); // STOP LOADING
     }
   };
-
-  };
-
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
 
@@ -114,6 +108,6 @@ const Login = ({ setUser }) => {
       </div>
     </div>
   );
-
+};
 
 export default Login;
