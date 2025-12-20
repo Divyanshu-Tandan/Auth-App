@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = ({ user, setUser }) => {
   const navigate = useNavigate();
@@ -6,6 +7,8 @@ const Navbar = ({ user, setUser }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
+    navigate("/");
+  };
     navigate("/");
   };
 
@@ -93,6 +96,5 @@ const Navbar = ({ user, setUser }) => {
       </div>
     </nav>
   );
-};
 
 export default Navbar;

@@ -1,10 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
     email: "",
+    password: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -15,6 +19,7 @@ const Login = ({ setUser }) => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,10 +36,12 @@ const Login = ({ setUser }) => {
       setUser(res.data);
       navigate("/");
     } catch (error) {
-      setError(error.response?.data?.message || "Login Failed");
+      navigate("/");
     } finally {
       setLoading(false); // STOP LOADING
     }
+  };
+
   };
 
   return (
@@ -107,6 +114,6 @@ const Login = ({ setUser }) => {
       </div>
     </div>
   );
-};
+
 
 export default Login;
