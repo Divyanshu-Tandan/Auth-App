@@ -6,7 +6,6 @@ const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    password: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // NEW
@@ -29,11 +28,12 @@ const Login = ({ setUser }) => {
         formData
       );
 
-      localStorage.setItem("token", res.data.token);
+      const token = res.data.token
+      localStorage.setItem("token", token);
       setUser(res.data);
       navigate("/");
     } catch (error) {
-      navigate("/");
+      navigate("/login");
     } finally {
       setLoading(false); // STOP LOADING
     }

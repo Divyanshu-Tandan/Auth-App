@@ -23,8 +23,11 @@ function App() {
           setUser(res.data);
         }
         catch(error) {
+          console.log(error.response?.data || error.message); // 👈 ADD THIS
           setError('Failed to fetch user data');
-          localStorage.removeItem("token");
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token");
+          }
         }
       }
       setLoading(false);
@@ -45,7 +48,7 @@ function App() {
       <Navbar user={user} setUser={setUser}/>
       <Routes>
         <Route path="/" element={<Home user={user} error={error} />} />
-        <Route path="/login" element={user ? <Navigate to='/'/> : <Login setUser={setUser}/>} />
+        <Route path="/login" element={<Login setUser={setUser}/>} />
         <Route path="/register" element={<Register setUser={setUser}/>} />
       </Routes>
     </BrowserRouter>

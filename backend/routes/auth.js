@@ -22,7 +22,6 @@ router.post('/register', async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
         
@@ -30,6 +29,7 @@ router.post('/register', async (req, res) => {
             id: user._id,
             username: user.username,
             email: user.email,
+            token
         })
     }
     catch (error) {
@@ -48,14 +48,13 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({email});
         
         if(!user || !(await user.matchPassword(password))) {
-            return res.status(401).json({ message: "Invalid rredentials" });
+            return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = generateToken(user._id);
 
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
 
@@ -63,6 +62,7 @@ router.post('/login', async (req, res) => {
             id: user._id,
             username: user.username, 
             email: user.email,
+            token
         })
     }
     catch(error) {

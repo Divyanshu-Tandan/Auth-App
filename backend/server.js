@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import { connectDB } from './config/db.js'; // .js is necessary in db.js
@@ -10,12 +11,11 @@ const app = express();
 connectDB();
 
 app.use(cors({
-    origin: "*",
     credentials: true
 }))
 app.use(express.json()); // This parse every req.body from every page
 
-// app.use(cookieParser());
+app.use(cookieParser());
 
 app.use('/api/users', authRoutes);
 

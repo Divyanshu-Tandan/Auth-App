@@ -8,7 +8,6 @@ const Navbar = ({ user, setUser }) => {
     setUser(null);
     navigate("/");
   };
-    navigate("/");
 
   return (
     <nav className="fixed top-0 left-0 z-50 w-full backdrop-blur-xl bg-black/40 border-b border-white/10">

@@ -20,7 +20,8 @@ const Register = ({ setUser }) => {
     e.preventDefault();
     try {
       const res = await axios.post(`${API_BASE}/api/users/register`, formData);
-      localStorage.setItem("token", res.data.token);
+      const token = res.data.token
+      localStorage.setItem("token", token);
       setUser(res.data);
       navigate("/");
     } catch (error) {
