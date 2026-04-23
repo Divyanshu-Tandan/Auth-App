@@ -14,24 +14,28 @@ function App() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      if(token) {
-        try {
-          const res = await axios.get(`${API_BASE}/api/users/me`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-          setUser(res.data);
+      try {
+        const res = await axios.get(`${API_BASE}/api/users/me`, {
+          withCredentials: true
+        });
+
+        setUser(res.data);
+      } catch (error) {
+        const status = error.response?.status;
+
+        if (status === 401) {
+          // ✅ Not logged in → normal case
+          setUser(null);
+        } else {
+          // ❗ Real error (server down, network issue, etc.)
+          console.error(error.response?.data || error.message);
+          setError("Something went wrong. Please try again.");
         }
-        catch(error) {
-          console.log(error.response?.data || error.message); // 👈 ADD THIS
-          setError('Failed to fetch user data');
-          if (error.response && error.response.status === 401) {
-            localStorage.removeItem("token");
-          }
-        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    }
+    };
+
     fetchUser();
   }, []);
 

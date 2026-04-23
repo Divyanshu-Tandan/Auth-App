@@ -1,10 +1,14 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from 'axios'
+  const API_BASE = import.meta.env.VITE_API_URL;
 
 const Navbar = ({ user, setUser }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const handleLogout = async () => {
+    await axios.post(`${API_BASE}/api/users/logout`, {}, {
+      withCredentials: true
+    });
     setUser(null);
     navigate("/");
   };

@@ -21,7 +21,8 @@ router.post('/register', async (req, res) => {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            sameSite: "Lax",    // important
+            secure: false,
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
         
@@ -54,7 +55,8 @@ router.post('/login', async (req, res) => {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            sameSite: "Lax",    // important
+            secure: false,
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
 
@@ -68,6 +70,17 @@ router.post('/login', async (req, res) => {
     catch(error) {
         res.status(500).json({ message: "Server error" });
     }
+});
+
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false,     // same as login
+    sameSite: "Lax",   // same as login
+    path: "/"          // VERY IMPORTANT
+  });
+
+  res.json({ message: "Logged out" });
 });
 
 router.get('/me', protect, async (req, res) => {

@@ -25,11 +25,9 @@ const Login = ({ setUser }) => {
     try {
       const res = await axios.post(
         `${API_BASE}/api/users/login`,
-        formData
+        formData, { withCredentials: true }
       );
 
-      const token = res.data.token
-      localStorage.setItem("token", token);
       setUser(res.data);
       navigate("/");
     } catch (error) {
