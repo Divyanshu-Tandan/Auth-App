@@ -31,9 +31,9 @@ const Home = ({ user, error }) => {
         ) : (
           <div className="max-w-3xl animate-fadeInUp">
             <h1 className="text-6xl md:text-7xl font-serif leading-tight mb-6">
-              <span className="block text-white">Powerful</span>
-              <span className="block text-emerald-400">UI Design</span>
-              <span className="block text-white">Tool</span>
+              <span className="block text-white">Secure</span>
+              <span className="block text-emerald-400">Login & User</span>
+              <span className="block text-white">Management</span>
             </h1>
 
             <p className="text-gray-400 text-lg mb-10">

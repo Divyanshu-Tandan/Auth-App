@@ -5,6 +5,9 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import axios from 'axios'
+import Features from "./pages/Features"
+import Pricing from "./pages/Pricing"
+import About from "./pages/About"
 
 function App() {
   const [user, setUser] = useState(null);
@@ -54,6 +57,9 @@ function App() {
         <Route path="/" element={<Home user={user} error={error} />} />
         <Route path="/login" element={<Login setUser={setUser}/>} />
         <Route path="/register" element={<Register setUser={setUser}/>} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </BrowserRouter>
   )
