@@ -38,6 +38,7 @@ const Login = ({ setUser }) => {
       setUser(res.data);
       navigate("/");
     } catch (error) {
+      setError(error.response?.data?.message || "Something went wrong")
       navigate("/login");
     } finally {
       setLoading(false); // STOP LOADING
@@ -108,7 +109,6 @@ const Login = ({ setUser }) => {
               "Login"
             )}
           </button>
-
         </form>
       </div>
     </div>
