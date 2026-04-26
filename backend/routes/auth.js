@@ -11,9 +11,30 @@ router.post('/register', async (req, res) => {
         if(!username || !email || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
-        const userExist = await User.findOne({email});
+
+        const userExist = await User.findOne({
+            $or: [
+                {email}, 
+                {username}
+            ]
+        });
+
         if(userExist) {
-            return res.status(400).json({ message: "User already exists" });
+            if(userExist.email === email && userExist.username === username){
+                return res.status(400).json({
+                    message:"Email and Username already exist"
+                });
+            }
+
+            if(userExist.email === email){
+                return res.status(400).json({
+                    message:"Email already registered"
+                });
+            }
+
+            return res.status(400).json({
+                message:"Username already taken"
+            });
         } 
 
         const user = await User.create({ username, email, password });
@@ -40,13 +61,19 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
 
     try {
-        if(!email || !password) {
+        if((!username && !email) || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
-        const user = await User.findOne({email});
+
+        const user = await User.findOne({
+            $or: [
+                {email},
+                {username}
+            ]
+        });
         
         if(!user || !(await user.matchPassword(password))) {
             return res.status(401).json({ message: "Invalid credentials" });

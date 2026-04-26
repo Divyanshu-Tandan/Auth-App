@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
-    email: "",
+    login: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -23,9 +23,16 @@ const Login = ({ setUser }) => {
     setLoading(true); // START LOADING
 
     try {
+      const payload = {
+        password: formData.password,
+        ...(formData.login.includes('@') ?
+        { email: formData.login } :
+        { username: formData.login })
+      };
+
       const res = await axios.post(
         `${API_BASE}/api/users/login`,
-        formData, { withCredentials: true }
+        payload, { withCredentials: true }
       );
 
       setUser(res.data);
@@ -62,10 +69,10 @@ const Login = ({ setUser }) => {
         <form onSubmit={handleSubmit} className="space-y-5">
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">Email</label>
+            <label className="text-sm text-gray-300">Email or Username</label>
             <input
-              type="email"
-              name="email"
+              type="text"
+              name="login"
               onChange={handleChange}
               value={formData.email}
               disabled={loading}
