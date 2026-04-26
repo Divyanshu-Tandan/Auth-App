@@ -20,9 +20,9 @@ const Navbar = ({ user, setUser }) => {
         {/* Logo */}
         <NavLink
           to="/"
-          className="text-xl font-semibold tracking-wide text-white hover:text-emerald-400 transition"
+          className="text-xl font-semibold tracking-wide text-white hover:text-emerald-400 transition flex items-center justify-center gap-1"
         >
-          <span className="text-emerald-400 mr-1">◉</span>
+          <img className='h-6 w-6' src="/AuthIcon.svg" alt="AuthIcon" />
           AuthApp
         </NavLink>
 
