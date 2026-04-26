@@ -76,23 +76,7 @@ const Navbar = ({ user, setUser }) => {
                 Logout
               </button>
             </>
-          ) : (
-            <>
-              <NavLink
-                to="/login"
-                className="px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-sm text-emerald-300 hover:bg-emerald-500/30 transition"
-              >
-                Login
-              </NavLink>
-
-              <NavLink
-                to="/register"
-                className="px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm text-white hover:bg-white/20 transition"
-              >
-                Register
-              </NavLink>
-            </>
-          )}
+          ) : "" }
         </div>
       </div>
     </nav>
