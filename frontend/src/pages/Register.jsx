@@ -97,7 +97,7 @@ const Register = ({ setUser }) => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2"
               >
-                {formData.password == "" ? "" : showPassword ? <img src="/eyeOffIcon.svg" /> : <img src="/eyeIcon.svg" /> }
+                {formData.password == "" ? "" : showPassword ? <img src="/eyeIcon.svg" /> : <img src="/eyeOffIcon.svg" /> }
               </button>
           </div>
 
