@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Register = ({ setUser }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -80,10 +81,10 @@ const Register = ({ setUser }) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 relative">
             <label className="text-sm text-gray-300">Password</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password" }
               name="password"
               placeholder="Create a password"
               onChange={handleChange}
@@ -91,6 +92,13 @@ const Register = ({ setUser }) => {
               className="bg-black/40 border border-white/20 rounded-md px-3 py-2 outline-none focus:border-emerald-400 transition"
               required
             />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2"
+              >
+                {formData.password == "" ? "" : showPassword ? <img src="/eyeOffIcon.svg" /> : <img src="/eyeIcon.svg" /> }
+              </button>
           </div>
 
           <button

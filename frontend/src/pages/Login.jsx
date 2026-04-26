@@ -8,6 +8,7 @@ const Login = ({ setUser }) => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false); // NEW
   const navigate = useNavigate();
   const API_BASE = import.meta.env.VITE_API_URL;
@@ -82,10 +83,10 @@ const Login = ({ setUser }) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 relative">
             <label className="text-sm text-gray-300">Password</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password" }
               name="password"
               onChange={handleChange}
               value={formData.password}
@@ -93,8 +94,14 @@ const Login = ({ setUser }) => {
               className="bg-black/40 border border-white/20 rounded-md px-3 py-2 outline-none focus:border-emerald-400 transition disabled:opacity-50"
               required
             />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2"
+              >
+                {formData.password == "" ? "" : showPassword ? <img src="/eyeOffIcon.svg" /> : <img src="/eyeIcon.svg" /> }
+              </button>
           </div>
-
           <button
             type="submit"
             disabled={loading}
