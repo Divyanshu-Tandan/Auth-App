@@ -44,8 +44,16 @@ function App() {
 
   if(isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <h2 className="text-2xl text-[#5f259f] text-center">Loading...</h2>
+      <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
+
+        {/* Animated Blob */}
+        <div className="absolute w-105 h-105 bg-emerald-500/40 blur-[120px] rounded-full animate-blob top-1/4 left-1/3" />
+        <div className="absolute w-75 h-75 bg-emerald-400/30 blur-[120px] rounded-full animate-blob animation-delay-2000 top-1/2 right-1/4" />
+        
+        {/* Grid Background */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[60px_60px] opacity-30" />
+
+        <h2 className="text-4xl text-emerald-400 text-center">Loading...</h2>
       </div>
     )
   }
