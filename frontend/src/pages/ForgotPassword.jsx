@@ -16,7 +16,6 @@ const ForgotPassword = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
 
   const [loading,setLoading] = useState(false);
   const [message,setMessage] = useState("");
@@ -279,9 +278,9 @@ const ForgotPassword = () => {
               !showPassword
              )
             }
-            className="absolute right-3 top-9"
+            className="absolute right-3 top-1/2"
            >
-             👁
+             {resetData.newPassword == "" ? "" : showPassword ? <img src="/eyeIcon.svg" /> : <img src="/eyeOffIcon.svg" /> }
            </button>
           </div>
 
@@ -294,7 +293,7 @@ const ForgotPassword = () => {
 
            <input
             type={
-             showConfirm
+             showPassword
              ? "text"
              : "password"
             }
@@ -308,13 +307,12 @@ const ForgotPassword = () => {
            <button
             type="button"
             onClick={()=>
-             setShowConfirm(
-              !showConfirm
+             setShowPassword(
+              !showPassword
              )
             }
             className="absolute right-3 top-9"
            >
-             👁
            </button>
 
           </div>
