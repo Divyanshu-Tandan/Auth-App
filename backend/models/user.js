@@ -15,7 +15,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    passwordResetOTP: String,
+    passwordResetExpires: Date
 }, { timestamps: true /* This is to save the time when a user was created or updated */});
 
 // This runs before a user document is saved

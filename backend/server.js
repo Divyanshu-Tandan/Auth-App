@@ -1,11 +1,10 @@
+import './config/env.js'
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import { connectDB } from './config/db.js'; // .js is necessary in db.js
 import cors from 'cors'
 
-dotenv.config();
 const PORT = process.env.PORT || 5000;
 const app = express();
 app.set("trust proxy", 1);

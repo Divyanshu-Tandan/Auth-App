@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
@@ -94,6 +94,12 @@ const Login = ({ setUser }) => {
               className="bg-black/40 border border-white/20 rounded-md px-3 py-2 outline-none focus:border-emerald-400 transition disabled:opacity-50"
               required
             />
+            <NavLink
+              to="/forgot-password"
+              className="text-sm text-right text-emerald-400"
+            >
+              Forgot Password
+            </NavLink>
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
