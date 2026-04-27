@@ -103,7 +103,7 @@ const Login = ({ setUser }) => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2"
+                className="absolute right-3 top-8"
               >
                 {formData.password == "" ? "" : showPassword ? <img src="/eyeIcon.svg" /> : <img src="/eyeOffIcon.svg" /> }
               </button>
