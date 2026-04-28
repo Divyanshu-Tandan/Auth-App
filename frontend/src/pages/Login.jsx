@@ -46,7 +46,7 @@ const Login = ({ setUser }) => {
     }
   };
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
+    <div className="relative min-h-dvh flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
 
       {/* Animated Blob */}
       <div className="absolute w-105 h-105 bg-emerald-500/40 blur-[120px] rounded-full animate-blob top-1/4 left-1/3" />
@@ -56,9 +56,9 @@ const Login = ({ setUser }) => {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[60px_60px] opacity-30" />
 
       {/* Login Card */}
-      <div className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-10 shadow-[0_0_80px_rgba(16,185,129,0.25)] animate-fadeInUp">
+      <div className="relative z-10 w-full max-w-md mx-4 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-[0_0_80px_rgba(16,185,129,0.25)] animate-fadeInUp">
 
-        <h2 className="text-3xl font-semibold text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
           <span className="text-emerald-400">Welcome</span> Back
         </h2>
 

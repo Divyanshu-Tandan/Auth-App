@@ -45,7 +45,7 @@ function App() {
 
   if(isLoading) {
     return (
-      <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
+      <div className="relative min-h-dvh overflow-hidden flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
 
         {/* Animated Blob */}
         <div className="absolute w-105 h-105 bg-emerald-500/40 blur-[120px] rounded-full animate-blob top-1/4 left-1/3" />

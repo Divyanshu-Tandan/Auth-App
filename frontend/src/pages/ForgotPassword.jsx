@@ -145,15 +145,15 @@ const ForgotPassword = () => {
 
 
   return (
-   <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
+   <div className="relative min-h-dvh overflow-hidden flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white px-4">
 
-      <div className="absolute w-96 h-96 bg-emerald-500/30 blur-[120px] rounded-full top-1/4 left-1/3" />
+      <div className="absolute w-72 sm:w-96 h-72 sm:h-96 bg-emerald-500/30 blur-[100px] sm:blur-[120px] rounded-full top-1/4 left-1/4 sm:left-1/3" />
 
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[60px_60px] opacity-30" />
 
-      <div className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-10 shadow-[0_0_80px_rgba(16,185,129,0.25)]">
+      <div className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-[0_0_80px_rgba(16,185,129,0.25)]">
 
-        <h2 className="text-3xl font-semibold text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
           <span className="text-emerald-400">
             Reset
           </span>{" "}
