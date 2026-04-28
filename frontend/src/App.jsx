@@ -9,6 +9,7 @@ import Features from "./pages/Features"
 import Pricing from "./pages/Pricing"
 import About from "./pages/About"
 import ForgotPassword from "./pages/ForgotPassword"
+import NotFound from "./pages/NotFound"
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,7 +46,7 @@ function App() {
 
   if(isLoading) {
     return (
-      <div className="relative min-h-dvh overflow-hidden flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
+      <div className="relative min-h-dvh flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
 
         {/* Animated Blob */}
         <div className="absolute w-105 h-105 bg-emerald-500/40 blur-[120px] rounded-full animate-blob top-1/4 left-1/3" />
@@ -70,6 +71,7 @@ function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/about" element={<About />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )
