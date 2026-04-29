@@ -24,7 +24,7 @@ const Navbar = ({ user, setUser }) => {
           to="/"
           className="text-lg sm:text-xl font-semibold tracking-wide text-white hover:text-emerald-400 transition flex items-center justify-center gap-1"
         >
-          <img className='h-5 w-5 sm:h-6 sm:w-6' src="/AuthIcon.svg" alt="AuthIcon" />
+          <img className='h-7 w-7' src="/AuthIcon.svg" alt="AuthIcon" />
           <span className="hidden sm:inline">AuthApp</span>
         </NavLink>
 
@@ -57,21 +57,33 @@ const Navbar = ({ user, setUser }) => {
 
           <NavLink
             to="/features"
-            className="hover:text-white transition"
+            className={({ isActive }) =>
+              isActive
+                ? "text-emerald-400"
+                : "hover:text-white transition"
+            }
           >
             Features
           </NavLink>
 
           <NavLink
             to="/pricing"
-            className="hover:text-white transition"
+            className={({ isActive }) =>
+              isActive
+                ? "text-emerald-400"
+                : "hover:text-white transition"
+            }
           >
             Pricing
           </NavLink>
 
           <NavLink
             to="/about"
-            className="hover:text-white transition"
+            className={({ isActive }) =>
+              isActive
+                ? "text-emerald-400"
+                : "hover:text-white transition"
+            }
           >
             About
           </NavLink>
@@ -115,7 +127,11 @@ const Navbar = ({ user, setUser }) => {
             <NavLink
               to="/features"
               onClick={() => setIsMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
+              className={({ isActive }) =>
+                `block px-3 py-2 rounded-lg text-sm ${
+                  isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
+                }`
+              }
             >
               Features
             </NavLink>
@@ -123,7 +139,11 @@ const Navbar = ({ user, setUser }) => {
             <NavLink
               to="/pricing"
               onClick={() => setIsMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
+              className={({ isActive }) =>
+                `block px-3 py-2 rounded-lg text-sm ${
+                  isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
+                }`
+              }
             >
               Pricing
             </NavLink>
@@ -131,7 +151,11 @@ const Navbar = ({ user, setUser }) => {
             <NavLink
               to="/about"
               onClick={() => setIsMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
+              className={({ isActive }) =>
+                `block px-3 py-2 rounded-lg text-sm ${
+                  isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
+                }`
+              }
             >
               About
             </NavLink>
