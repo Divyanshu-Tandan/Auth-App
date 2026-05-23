@@ -1,6 +1,7 @@
 import express from 'express';
 import User from '../models/user.js';
-import { protect } from '../middleware/auth.js';
+import protect from '../middleware/auth.middleware.js';
+import verifyAdmin from '../middleware/admin.middleware.js'
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto'
 import transporter from '../config/mail.js'
@@ -53,6 +54,7 @@ router.post('/register', async (req, res) => {
             id: user._id,
             username: user.username,
             email: user.email,
+            role: user.role,
             token
         })
     }
@@ -93,6 +95,7 @@ router.post('/login', async (req, res) => {
             id: user._id,
             username: user.username, 
             email: user.email,
+            role: user.role,
             token
         })
     }
@@ -241,6 +244,100 @@ router.post('/forgot-password/reset-password', async (req, res) => {
 router.get('/me', protect, async (req, res) => {
     res.status(200).json(req.user);
 });
+
+router.get('/getAllUsers', protect, verifyAdmin, async (req, res) => {
+
+    try {
+        const allUsers = await User.find().select('-password')
+
+        return res.status(200).json({
+            message: "Users fetched successfully",
+            allUsers
+        })
+
+    } catch(error) {
+        return res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+})
+
+// Get single user by ID
+router.get('/:id', protect, verifyAdmin, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password');
+        
+        if(!user) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
+
+        return res.status(200).json({
+            message: "User fetched successfully",
+            user
+        })
+
+    } catch(error) {
+        return res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+})
+
+// Update user role
+router.put('/:id/role', protect, verifyAdmin, async (req, res) => {
+    try {
+        const { role } = req.body;
+
+        if(!['user', 'admin'].includes(role)) {
+            return res.status(400).json({
+                message: "Invalid role"
+            })
+        }
+
+        const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true }).select('-password');
+
+        if(!user) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
+
+        return res.status(200).json({
+            message: "User role updated successfully",
+            user
+        })
+
+    } catch(error) {
+        return res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+})
+
+// Delete user
+router.delete('/:id', protect, verifyAdmin, async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+
+        if(!user) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
+
+        return res.status(200).json({
+            message: "User deleted successfully",
+            user
+        })
+
+    } catch(error) {
+        return res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+})
 
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: "30d"});

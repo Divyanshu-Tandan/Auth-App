@@ -27,6 +27,14 @@ const Home = ({ user, error }) => {
             <p className="text-gray-300 text-base sm:text-lg">
               Email: {user.email}
             </p>
+            {user?.role === 'admin' && (
+              <NavLink
+                to="/admin"
+                className="inline-block mt-6 px-6 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 hover:bg-emerald-500/30 transition text-emerald-300 text-sm font-semibold"
+              >
+                Admin Panel
+              </NavLink>
+            )}
           </div>
         ) : (
           <div className="max-w-3xl mx-4 animate-fadeInUp">

@@ -10,6 +10,7 @@ import Pricing from "./pages/Pricing"
 import About from "./pages/About"
 import ForgotPassword from "./pages/ForgotPassword"
 import NotFound from "./pages/NotFound"
+import AdminPanel from "./pages/AdminPanel"
 
 function App() {
   const [user, setUser] = useState(null);
@@ -71,6 +72,7 @@ function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/about" element={<About />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/admin" element={<AdminPanel user={user} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

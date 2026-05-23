@@ -1,7 +1,7 @@
 import './config/env.js'
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import authRoutes from './routes/auth.js';
+import authRoutes from './routes/auth.routes.js';
 import { connectDB } from './config/db.js'; // .js is necessary in db.js
 import cors from 'cors'
 
@@ -20,8 +20,8 @@ app.use(cookieParser());
 
 app.use('/api/users', authRoutes);
 
-app.get('/', (req, res) => {
-    res.send("Hello World!");
+app.get('/health', (req, res) => {
+    res.send("The server is healthy 🙂");
 });
 
 app.listen(PORT, () => {

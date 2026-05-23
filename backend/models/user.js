@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    role:{
+        type: String,
+        enum: ["user", "admin"],
+        default: "user",
+    },
     passwordResetOTP: String,
     passwordResetExpires: Date
 }, { timestamps: true /* This is to save the time when a user was created or updated */});

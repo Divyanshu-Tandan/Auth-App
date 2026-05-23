@@ -1,7 +1,7 @@
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
 
-export const protect = async (req, res, next) => {
+const protect = async (req, res, next) => {
     let token;
     // ✅ Check Authorization header FIRST
     if (
@@ -14,11 +14,11 @@ export const protect = async (req, res, next) => {
     else if (req.cookies && req.cookies.token) {
         token = req.cookies.token;
     }
-
+    
     if (!token) {
         return res.status(401).json({ message: 'Not authorized, no token' });
     }
-
+    
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -26,6 +26,8 @@ export const protect = async (req, res, next) => {
 
         next();
     } catch (error) {
-        return res.status(401).json({ message: 'Not authorized, token failed' });
+        return res.status(401).json({ message: 'Not authorized, token failed', error: error.message });
     }
 }
+
+export default protect
