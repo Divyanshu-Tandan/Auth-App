@@ -1,18 +1,27 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from 'axios'
 import { useState } from 'react'
-  const API_BASE = import.meta.env.VITE_API_URL;
+import LogoutModal from './LogoutModal';
 
 const Navbar = ({ user, setUser }) => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = async () => {
-    await axios.post(`${API_BASE}/api/users/logout`, {}, {
-      withCredentials: true
-    });
+  /**
+   * When logout button is clicked, show the logout modal instead of immediately logging out
+   * The actual logout logic is handled inside LogoutModal component
+   */
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  /**
+   * Callback when logout is successful
+   * Clear user state and optionally close menu
+   */
+  const handleLogoutSuccess = () => {
     setUser(null);
-    navigate("/");
+    setIsMenuOpen(false);
   };
 
   return (
@@ -98,7 +107,7 @@ const Navbar = ({ user, setUser }) => {
               </span>
 
               <button
-                onClick={handleLogout}
+                onClick={handleLogoutClick}
                 className="px-3 lg:px-4 py-1.5 lg:py-2 rounded-full bg-white/10 border border-white/20 text-xs lg:text-sm text-white hover:bg-white/20 transition cursor-pointer"
               >
                 Logout
@@ -167,10 +176,7 @@ const Navbar = ({ user, setUser }) => {
                   {user.username}
                 </div>
                 <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
+                  onClick={handleLogoutClick}
                   className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-sm text-white hover:bg-white/20 transition text-left"
                 >
                   Logout
@@ -180,6 +186,14 @@ const Navbar = ({ user, setUser }) => {
           </div>
         </div>
       )}
+
+      {/* LOGOUT MODAL - Rendered via Portal */}
+      <LogoutModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        username={user?.username}
+        onLogoutSuccess={handleLogoutSuccess}
+      />
     </nav>
   );
 };

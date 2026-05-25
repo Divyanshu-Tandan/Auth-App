@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
+import DeleteModal from '../components/DeleteModal';
 
 const AdminPanel = ({ user }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editingId, setEditingId] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // { userId, username }
   const API_BASE = import.meta.env.VITE_API_URL;
 
   // Redirect if not admin
@@ -50,22 +51,20 @@ const AdminPanel = ({ user }) => {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    try {
-      await axios.delete(
-        `${API_BASE}/api/users/${userId}`,
-        { withCredentials: true }
-      );
-      setUsers(users.filter(u => u._id !== userId));
+  /**
+   * Callback when deletion is successful
+   * Refresh the users list by removing the deleted user
+   */
+  const handleDeleteSuccess = () => {
+    if (deleteConfirm?.userId) {
+      setUsers(users.filter(u => u._id !== deleteConfirm.userId));
       setDeleteConfirm(null);
       setError('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete user');
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0f0d] text-white pt-20 px-4 sm:px-6 md:px-10 pb-10">
+    <div className="min-h-dvh bg-[#0b0f0d] text-white pt-20 px-4 sm:px-6 md:px-10 pb-10">
       {/* Animated Background Blobs */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute w-105 h-105 bg-emerald-500/20 blur-[120px] rounded-full animate-blob top-1/4 left-1/3" />
@@ -162,7 +161,7 @@ const AdminPanel = ({ user }) => {
                                 </button>
                               )}
                               <button
-                                onClick={() => setDeleteConfirm(u._id)}
+                                onClick={() => setDeleteConfirm({ userId: u._id, username: u.username })}
                                 className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded text-red-300 text-xs transition"
                               >
                                 Delete
@@ -179,31 +178,14 @@ const AdminPanel = ({ user }) => {
           </div>
         )}
 
-        {/* Delete Confirmation Modal */}
-        {deleteConfirm && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-[#0b0f0d] border border-white/20 rounded-2xl p-6 max-w-sm w-full">
-              <h2 className="text-xl font-bold mb-4">Delete User?</h2>
-              <p className="text-gray-400 mb-6">
-                Are you sure you want to delete this user? This action cannot be undone.
-              </p>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => handleDeleteUser(deleteConfirm)}
-                  className="flex-1 px-4 py-2 bg-red-500/20 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition text-red-300"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* DELETE MODAL - Rendered via Portal */}
+        <DeleteModal
+          isOpen={!!deleteConfirm}
+          onClose={() => setDeleteConfirm(null)}
+          userId={deleteConfirm?.userId}
+          username={deleteConfirm?.username}
+          onDeleteSuccess={handleDeleteSuccess}
+        />
       </div>
     </div>
   );
