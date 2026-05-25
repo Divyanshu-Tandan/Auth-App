@@ -84,7 +84,7 @@ const LogoutModal = ({ isOpen, onClose, username, onLogoutSuccess }) => {
         <button
           onClick={handleLogout}
           disabled={isLoading}
-          className="flex-1 px-4 py-2 sm:py-3 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 text-sm sm:text-base font-semibold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-4 py-2 sm:py-3 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 text-sm sm:text-base font-semibold transition cursor-pointer disabled:opacity-50"
         >
           {isLoading ? 'Logging out...' : 'Logout'}
         </button>

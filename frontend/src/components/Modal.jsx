@@ -100,7 +100,7 @@ const Modal = ({ isOpen, onClose, children, closeOnBackdropClick = true }) => {
           - Prevents clicks from passing through to backdrop
         */}
         <div
-          className="bg-[#0b0f0d] border border-white/20 rounded-2xl shadow-2xl max-w-sm w-full"
+          className="bg-[#0b0f0d] border border-white/20 rounded-2xl shadow-2xl max-w-sm w-full pointer-events-auto"
           onClick={(e) => e.stopPropagation()} // Prevent backdrop click when clicking modal
         >
           {/* children: Modal content (header, body, buttons) */}
