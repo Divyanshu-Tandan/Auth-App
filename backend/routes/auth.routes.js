@@ -245,6 +245,68 @@ router.get('/me', protect, async (req, res) => {
     res.status(200).json(req.user);
 });
 
+// Update user profile (username and email)
+router.put('/update-profile', protect, async (req, res) => {
+    try {
+        const { username, email } = req.body;
+        const userId = req.user._id;
+
+        // Validate input
+        if (!username && !email) {
+            return res.status(400).json({
+                message: "Please provide at least one field to update"
+            });
+        }
+
+        // Check if username is already taken (by another user)
+        if (username) {
+            const existingUsername = await User.findOne({
+                username, 
+                _id: { $ne: userId } 
+            });
+            if (existingUsername) {
+                return res.status(400).json({
+                    message: "Username already taken"
+                });
+            }
+        }
+
+        // Check if email is already registered (by another user)
+        if (email) {
+            const existingEmail = await User.findOne({ 
+                email, 
+                _id: { $ne: userId } 
+            });
+            if (existingEmail) {
+                return res.status(400).json({
+                    message: "Email already registered"
+                });
+            }
+        }
+
+        // Update user
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { 
+                ...(username && { username }),
+                ...(email && { email })
+            },
+            { new: true }
+        ).select('-password');
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user: updatedUser
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+});
+
 router.get('/getAllUsers', protect, verifyAdmin, async (req, res) => {
 
     try {

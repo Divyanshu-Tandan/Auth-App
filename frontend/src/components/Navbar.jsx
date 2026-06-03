@@ -38,7 +38,7 @@ const Navbar = ({ user, setUser }) => {
         </NavLink>
 
         {/* Mobile Menu Button */}
-        <button 
+        <button
           className="md:hidden text-white p-2"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
@@ -76,14 +76,14 @@ const Navbar = ({ user, setUser }) => {
           </NavLink>
 
           <NavLink
-            to="/pricing"
+            to="/tech-stack"
             className={({ isActive }) =>
               isActive
                 ? "text-emerald-400"
                 : "hover:text-white transition"
             }
           >
-            Pricing
+            Tech Stack
           </NavLink>
 
           <NavLink
@@ -113,7 +113,7 @@ const Navbar = ({ user, setUser }) => {
                 Logout
               </button>
             </>
-          ) : "" }
+          ) : ""}
         </div>
       </div>
 
@@ -125,8 +125,7 @@ const Navbar = ({ user, setUser }) => {
               to="/"
               onClick={() => setIsMenuOpen(false)}
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-lg text-sm ${
-                  isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
+                `block px-3 py-2 rounded-lg text-sm ${isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
                 }`
               }
             >
@@ -137,8 +136,7 @@ const Navbar = ({ user, setUser }) => {
               to="/features"
               onClick={() => setIsMenuOpen(false)}
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-lg text-sm ${
-                  isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
+                `block px-3 py-2 rounded-lg text-sm ${isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
                 }`
               }
             >
@@ -146,23 +144,21 @@ const Navbar = ({ user, setUser }) => {
             </NavLink>
 
             <NavLink
-              to="/pricing"
+              to="/tech-stack"
               onClick={() => setIsMenuOpen(false)}
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-lg text-sm ${
-                  isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
+                `block px-3 py-2 rounded-lg text-sm ${isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
                 }`
               }
             >
-              Pricing
+              Tech Stack
             </NavLink>
 
             <NavLink
               to="/about"
               onClick={() => setIsMenuOpen(false)}
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-lg text-sm ${
-                  isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
+                `block px-3 py-2 rounded-lg text-sm ${isActive ? "text-emerald-400 bg-emerald-400/10" : "text-gray-300 hover:text-white hover:bg-white/5"
                 }`
               }
             >

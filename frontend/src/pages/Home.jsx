@@ -27,14 +27,22 @@ const Home = ({ user, error }) => {
             <p className="text-gray-300 text-base sm:text-lg">
               Email: {user.email}
             </p>
-            {user?.role === 'admin' && (
+            <div className="flex gap-3 mt-6 flex-wrap justify-center">
               <NavLink
-                to="/admin"
-                className="inline-block mt-6 px-6 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 hover:bg-emerald-500/30 transition text-emerald-300 text-sm font-semibold"
+                to="/edit-profile"
+                className="px-6 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 hover:bg-emerald-500/30 transition text-emerald-300 text-sm font-semibold"
               >
-                Admin Panel
+                Edit Profile
               </NavLink>
-            )}
+              {user?.role === 'admin' && (
+                <NavLink
+                  to="/admin"
+                  className="px-6 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 hover:bg-emerald-500/30 transition text-emerald-300 text-sm font-semibold"
+                >
+                  Admin Panel
+                </NavLink>
+              )}
+            </div>
           </div>
         ) : (
           <div className="max-w-3xl mx-4 animate-fadeInUp">
@@ -69,26 +77,23 @@ const Home = ({ user, error }) => {
       </div>
 
       {/* Floating Buttons - Hidden on mobile, visible on tablet+ */}
-      <div className="hidden md:absolute md:flex right-4 md:right-12 z-12 top-32 md:top-40 backdrop-blur-md bg-emerald-500/20 border border-emerald-400/40 px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm animate-float">
-        <NavLink
-          to='https://github.com/Divyanshu-Tandan/Auth-App'>
-          View Source
-        </NavLink>
-      </div>
+      <NavLink
+        className="hidden md:absolute md:flex right-4 md:right-12 z-12 top-32 md:top-40 backdrop-blur-md bg-emerald-500/20 border border-emerald-400/40 px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm animate-float hover:bg-emerald-500/30 transition"
+        to='https://github.com/Divyanshu-Tandan/Auth-App'>
+        View Source
+      </NavLink>
 
-      <div className="hidden md:absolute md:flex left-4 md:left-12 z-12 bottom-20 md:bottom-32 backdrop-blur-md bg-white/10 border border-white/20 px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm animate-floatSlow">
-        <NavLink
-          to='https://www.linkedin.com/in/divyanshu-tandan-675a62261/'>
-          Connect
-        </NavLink>
-      </div>
+      <NavLink
+        className="hidden md:absolute md:flex left-4 md:left-12 z-12 bottom-20 md:bottom-32 backdrop-blur-md bg-white/10 border border-white/20 px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm animate-floatSlow hover:bg-white/20 transition"
+        to='https://www.linkedin.com/in/divyanshu-tandan-675a62261/'>
+        Connect
+      </NavLink>
 
-      <div className="hidden md:absolute md:flex right-4 md:right-12 z-12 bottom-16 md:bottom-24 backdrop-blur-md bg-white/10 border border-white/20 px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm animate-float">
-        <NavLink
-          to='https://picsum.photos/800/600'>
-          Images
-        </NavLink>
-      </div>
+      <NavLink
+        className="hidden md:absolute md:flex right-4 md:right-12 z-12 bottom-16 md:bottom-24 backdrop-blur-md bg-white/10 border border-white/20 px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm animate-float hover:bg-white/20 transition"
+        to='https://picsum.photos/800/600'>
+        Images
+      </NavLink>
     </div>
   );
 };

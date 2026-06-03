@@ -6,11 +6,12 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import axios from 'axios'
 import Features from "./pages/Features"
-import Pricing from "./pages/Pricing"
+import TechStack from "./pages/TechStack"
 import About from "./pages/About"
 import ForgotPassword from "./pages/ForgotPassword"
 import NotFound from "./pages/NotFound"
 import AdminPanel from "./pages/AdminPanel"
+import EditProfile from "./pages/EditProfile"
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,14 +46,14 @@ function App() {
     fetchUser();
   }, []);
 
-  if(isLoading) {
+  if (isLoading) {
     return (
       <div className="relative min-h-dvh flex items-center justify-center overflow-hidden bg-[#0b0f0d] text-white">
 
         {/* Animated Blob */}
         <div className="absolute w-105 h-105 bg-emerald-500/40 blur-[120px] rounded-full animate-blob top-1/4 left-1/3" />
         <div className="absolute w-75 h-75 bg-emerald-400/30 blur-[120px] rounded-full animate-blob animation-delay-2000 top-1/2 right-1/4" />
-        
+
         {/* Grid Background */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[60px_60px] opacity-30" />
 
@@ -63,15 +64,16 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Navbar user={user} setUser={setUser}/>
+      <Navbar user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={<Home user={user} error={error} />} />
-        <Route path="/login" element={<Login setUser={setUser}/>} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/register" element={<Register setUser={setUser}/>} />
+        <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/edit-profile" element={<EditProfile user={user} setUser={setUser} />} />
         <Route path="/features" element={<Features />} />
+        <Route path="/tech-stack" element={<TechStack />} />
         <Route path="/about" element={<About />} />
-        <Route path="/pricing" element={<Pricing />} />
         <Route path="/admin" element={<AdminPanel user={user} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
