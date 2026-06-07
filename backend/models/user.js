@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin"],
         default: "user",
     },
+    lastActive: {
+        type: Date,
+        default: Date.now
+    },
     passwordResetOTP: String,
     passwordResetExpires: Date
 }, { timestamps: true /* This is to save the time when a user was created or updated */});

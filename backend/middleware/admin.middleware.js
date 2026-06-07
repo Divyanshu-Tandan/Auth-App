@@ -1,15 +1,15 @@
-import User from '../models/user.js'
+import User from '../models/User.js';
 import jwt from 'jsonwebtoken'
 
-const verifyAdmin = async (req, res, next) =>{
+const verifyAdmin = async (req, res, next) => {
     try {
-        if(req.user.role != 'admin') {
+        if (req.user.role != 'admin') {
             return res.status(403).json({
                 message: "Not authorized"
             })
         }
         next()
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Internal server error"
         })

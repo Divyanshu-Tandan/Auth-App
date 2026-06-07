@@ -110,12 +110,15 @@ const AdminPanel = ({ user }) => {
                         <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-emerald-400">Username</th>
                         <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-emerald-400">Email</th>
                         <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-emerald-400">Role</th>
+                        <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-emerald-400">Status</th>
                         <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-emerald-400">Joined</th>
                         <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-emerald-400">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {users.map((u) => (
+                      {users.map((u) => {
+                        const isOnline = u.lastActive && (new Date() - new Date(u.lastActive)) / (1000 * 60) < 5;
+                        return (
                         <tr key={u._id} className="hover:bg-white/5 transition">
                           <td className="px-4 sm:px-6 py-4 text-sm">{u.username}</td>
                           <td className="px-4 sm:px-6 py-4 text-sm text-gray-400">{u.email}</td>
@@ -147,6 +150,14 @@ const AdminPanel = ({ user }) => {
                               </span>
                             )}
                           </td>
+                          <td className="px-4 sm:px-6 py-4 text-sm">
+                            <div className="flex items-center gap-2">
+                              <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-gray-500'}`}></span>
+                              <span className={isOnline ? 'text-emerald-400' : 'text-gray-400'}>
+                                {isOnline ? 'Online' : 'Offline'}
+                              </span>
+                            </div>
+                          </td>
                           <td className="px-4 sm:px-6 py-4 text-sm text-gray-400">
                             {new Date(u.createdAt).toLocaleDateString()}
                           </td>
@@ -169,7 +180,7 @@ const AdminPanel = ({ user }) => {
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      );})}
                     </tbody>
                   </table>
                 </div>

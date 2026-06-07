@@ -1,5 +1,5 @@
 import express from 'express';
-import User from '../models/user.js';
+import User from '../models/User.js';
 import protect from '../middleware/auth.middleware.js';
 import verifyAdmin from '../middleware/admin.middleware.js'
 import jwt from 'jsonwebtoken';
@@ -11,34 +11,34 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
     try {
-        if(!username || !email || !password) {
+        if (!username || !email || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
 
         const userExist = await User.findOne({
             $or: [
-                {email}, 
-                {username}
+                { email },
+                { username }
             ]
         });
 
-        if(userExist) {
-            if(userExist.email === email && userExist.username === username){
+        if (userExist) {
+            if (userExist.email === email && userExist.username === username) {
                 return res.status(400).json({
-                    message:"Email and Username already exist"
+                    message: "Email and Username already exist"
                 });
             }
 
-            if(userExist.email === email){
+            if (userExist.email === email) {
                 return res.status(400).json({
-                    message:"Email already registered"
+                    message: "Email already registered"
                 });
             }
 
             return res.status(400).json({
-                message:"Username already taken"
+                message: "Username already taken"
             });
-        } 
+        }
 
         const user = await User.create({ username, email, password });
         const token = generateToken(user._id);
@@ -49,8 +49,8 @@ router.post('/register', async (req, res) => {
             sameSite: "None",    // important
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
-        
-        res.status(201).json({ 
+
+        res.status(201).json({
             id: user._id,
             username: user.username,
             email: user.email,
@@ -68,18 +68,18 @@ router.post('/login', async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
-        if((!username && !email) || !password) {
+        if ((!username && !email) || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
 
         const user = await User.findOne({
             $or: [
-                {email},
-                {username}
+                { email },
+                { username }
             ]
         });
-        
-        if(!user || !(await user.matchPassword(password))) {
+
+        if (!user || !(await user.matchPassword(password))) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = generateToken(user._id);
@@ -91,28 +91,38 @@ router.post('/login', async (req, res) => {
             maxAge: 30 * 24 * 60 * 60 * 1000
         });
 
-        res.status(201).json({ 
+        res.status(201).json({
             id: user._id,
-            username: user.username, 
+            username: user.username,
             email: user.email,
             role: user.role,
             token
         })
     }
-    catch(error) {
+    catch (error) {
         res.status(500).json({ message: "Server error" });
     }
 });
 
-router.post("/logout", (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: true,     // same as login
-    sameSite: "None",   // same as login
-    path: "/"          // VERY IMPORTANT
-  });
+router.post("/logout", async (req, res) => {
+    let token = req.cookies?.token || req.headers?.authorization?.split(" ")[1];
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            await User.findByIdAndUpdate(decoded.id, { lastActive: new Date(Date.now() - 10 * 60 * 1000) });
+        } catch (error) {
+            // Ignore verification errors for logout
+        }
+    }
 
-  res.json({ message: "Logged out" });
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,     // same as login
+        sameSite: "None",   // same as login
+        path: "/"          // VERY IMPORTANT
+    });
+
+    res.json({ message: "Logged out" });
 });
 
 router.post('/forgot-password/send-otp', async (req, res) => {
@@ -121,19 +131,19 @@ router.post('/forgot-password/send-otp', async (req, res) => {
         const { email } = req.body;
         const userExist = await User.findOne({ email });
 
-        if(!userExist) {
+        if (!userExist) {
             return res.json({
                 message: "If account exists OTP was sent"
             })
         }
-        
+
         const otp = generateOTP();
-        
+
         const hashedOTP = crypto
-        .createHash("sha256")
-        .update(otp)
-        .digest("hex");
-        
+            .createHash("sha256")
+            .update(otp)
+            .digest("hex");
+
         userExist.passwordResetOTP = hashedOTP;
         userExist.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
@@ -152,14 +162,14 @@ router.post('/forgot-password/send-otp', async (req, res) => {
         })
 
         res.status(201).json({
-            message:"OTP sent successfully",
+            message: "OTP sent successfully",
             userExist,
             otp: hashedOTP,
         });
 
-    } catch(err) {
+    } catch (err) {
         res.status(500).json({
-            message:"Server error"
+            message: "Server error"
         });
     }
 
@@ -180,7 +190,7 @@ router.post('/forgot-password/verify-otp', async (req, res) => {
             passwordResetExpires: { $gt: Date.now() }
         })
 
-        if(!user) {
+        if (!user) {
             return res.status(404).json({
                 message: "Invalid OTP"
             })
@@ -191,7 +201,7 @@ router.post('/forgot-password/verify-otp', async (req, res) => {
         })
 
 
-    } catch(error) {
+    } catch (error) {
         return status(500).json({
             message: error.message || "Server Error"
         })
@@ -211,12 +221,12 @@ router.post('/forgot-password/reset-password', async (req, res) => {
         const user = await User.findOne({
             email: email,
             passwordResetOTP: hashedOTP,
-            passwordResetExpires:{
-                $gt:Date.now()
+            passwordResetExpires: {
+                $gt: Date.now()
             }
         })
 
-        if(!user) {
+        if (!user) {
             return res.status(400).json({
                 message: "Invalid OTP"
             })
@@ -225,8 +235,8 @@ router.post('/forgot-password/reset-password', async (req, res) => {
         user.password = newPassword;
 
         // invalidate OTP
-        user.passwordResetOTP=undefined;
-        user.passwordResetExpires=undefined;
+        user.passwordResetOTP = undefined;
+        user.passwordResetExpires = undefined;
 
         await user.save();
 
@@ -234,7 +244,7 @@ router.post('/forgot-password/reset-password', async (req, res) => {
             message: "Password Updated Successfully"
         })
 
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             message: error.message || "Server Error"
         })
@@ -261,8 +271,8 @@ router.put('/update-profile', protect, async (req, res) => {
         // Check if username is already taken (by another user)
         if (username) {
             const existingUsername = await User.findOne({
-                username, 
-                _id: { $ne: userId } 
+                username,
+                _id: { $ne: userId }
             });
             if (existingUsername) {
                 return res.status(400).json({
@@ -273,9 +283,9 @@ router.put('/update-profile', protect, async (req, res) => {
 
         // Check if email is already registered (by another user)
         if (email) {
-            const existingEmail = await User.findOne({ 
-                email, 
-                _id: { $ne: userId } 
+            const existingEmail = await User.findOne({
+                email,
+                _id: { $ne: userId }
             });
             if (existingEmail) {
                 return res.status(400).json({
@@ -287,7 +297,7 @@ router.put('/update-profile', protect, async (req, res) => {
         // Update user
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { 
+            {
                 ...(username && { username }),
                 ...(email && { email })
             },
@@ -317,7 +327,7 @@ router.get('/getAllUsers', protect, verifyAdmin, async (req, res) => {
             allUsers
         })
 
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Internal server error"
         })
@@ -328,8 +338,8 @@ router.get('/getAllUsers', protect, verifyAdmin, async (req, res) => {
 router.get('/:id', protect, verifyAdmin, async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select('-password');
-        
-        if(!user) {
+
+        if (!user) {
             return res.status(404).json({
                 message: "User not found"
             })
@@ -340,7 +350,7 @@ router.get('/:id', protect, verifyAdmin, async (req, res) => {
             user
         })
 
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Internal server error"
         })
@@ -352,7 +362,7 @@ router.put('/:id/role', protect, verifyAdmin, async (req, res) => {
     try {
         const { role } = req.body;
 
-        if(!['user', 'admin'].includes(role)) {
+        if (!['user', 'admin'].includes(role)) {
             return res.status(400).json({
                 message: "Invalid role"
             })
@@ -360,7 +370,7 @@ router.put('/:id/role', protect, verifyAdmin, async (req, res) => {
 
         const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true }).select('-password');
 
-        if(!user) {
+        if (!user) {
             return res.status(404).json({
                 message: "User not found"
             })
@@ -371,7 +381,7 @@ router.put('/:id/role', protect, verifyAdmin, async (req, res) => {
             user
         })
 
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Internal server error"
         })
@@ -383,7 +393,7 @@ router.delete('/:id', protect, verifyAdmin, async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
 
-        if(!user) {
+        if (!user) {
             return res.status(404).json({
                 message: "User not found"
             })
@@ -394,7 +404,7 @@ router.delete('/:id', protect, verifyAdmin, async (req, res) => {
             user
         })
 
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Internal server error"
         })
@@ -402,13 +412,13 @@ router.delete('/:id', protect, verifyAdmin, async (req, res) => {
 })
 
 const generateToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: "30d"});
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 }
 
 function generateOTP() {
     // 6-digits OTP
     return Math.floor(
-    100000 + Math.random() * 900000
+        100000 + Math.random() * 900000
     ).toString();
 }
 
