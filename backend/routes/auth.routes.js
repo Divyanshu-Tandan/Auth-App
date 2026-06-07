@@ -1,5 +1,5 @@
 import express from 'express';
-import User from '../models/User.js';
+import User from '../models/user.js';
 import protect from '../middleware/auth.middleware.js';
 import verifyAdmin from '../middleware/admin.middleware.js'
 import jwt from 'jsonwebtoken';
