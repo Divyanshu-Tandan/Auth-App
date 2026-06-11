@@ -5,6 +5,7 @@ import verifyAdmin from '../middleware/admin.middleware.js'
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto'
 import transporter from '../config/mail.js'
+import { requestLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
@@ -64,7 +65,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', requestLimiter, async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
@@ -125,7 +126,7 @@ router.post("/logout", async (req, res) => {
     res.json({ message: "Logged out" });
 });
 
-router.post('/forgot-password/send-otp', async (req, res) => {
+router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
     try {
 
         const { email } = req.body;
@@ -320,11 +321,35 @@ router.put('/update-profile', protect, async (req, res) => {
 router.get('/getAllUsers', protect, verifyAdmin, async (req, res) => {
 
     try {
-        const allUsers = await User.find().select('-password')
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search || '';
+
+        const query = {};
+        if (search) {
+            query.$or = [
+                { username: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        const skip = (page - 1) * limit;
+
+        const allUsers = await User.find(query)
+            .select('-password')
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 });
+
+        const totalUsers = await User.countDocuments(query);
+        const totalPages = Math.ceil(totalUsers / limit);
 
         return res.status(200).json({
             message: "Users fetched successfully",
-            allUsers
+            allUsers,
+            totalPages,
+            currentPage: page,
+            totalUsers
         })
 
     } catch (error) {

@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
     login: "",
     password: "",
   });
-  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false); // NEW
   const navigate = useNavigate();
@@ -20,7 +20,6 @@ const Login = ({ setUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true); // START LOADING
 
     try {
@@ -37,9 +36,10 @@ const Login = ({ setUser }) => {
       );
 
       setUser(res.data);
+      toast.success("Welcome back!");
       navigate("/");
     } catch (error) {
-      setError(error.response?.data?.message || "Something went wrong")
+      toast.error(error.response?.data?.message || "Something went wrong")
       navigate("/login");
     } finally {
       setLoading(false); // STOP LOADING
@@ -61,12 +61,6 @@ const Login = ({ setUser }) => {
         <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
           <span className="text-emerald-400">Welcome</span> Back
         </h2>
-
-        {error && (
-          <p className="text-red-400 text-sm text-center mb-4">
-            {error}
-          </p>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
 

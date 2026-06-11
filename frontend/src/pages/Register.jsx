@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const Register = ({ setUser }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,7 +10,6 @@ const Register = ({ setUser }) => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -23,9 +23,10 @@ const Register = ({ setUser }) => {
       const res = await axios.post(`${API_BASE}/api/users/register`, formData);
       const token = res.data.token
       setUser(res.data);
+      toast.success("Registration successful!");
       navigate("/");
     } catch (error) {
-      setError(error.response?.data?.message || "Registration Failed");
+      toast.error(error.response?.data?.message || "Registration Failed");
     }
   };
 
@@ -45,12 +46,6 @@ const Register = ({ setUser }) => {
         <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
           <span className="text-emerald-400">Create</span> Account
         </h2>
-
-        {error && (
-          <p className="text-red-400 text-sm text-center mb-4">
-            {error}
-          </p>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
 

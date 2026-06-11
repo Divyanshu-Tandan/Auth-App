@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import DeleteModal from '../components/DeleteModal';
+import { toast } from 'react-hot-toast';
 
 const AdminPanel = ({ user }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null); // { userId, username }
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const API_BASE = import.meta.env.VITE_API_URL;
 
   // Redirect if not admin
@@ -18,22 +22,28 @@ const AdminPanel = ({ user }) => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [page, search]);
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/api/users/getAllUsers`, {
+      const res = await axios.get(`${API_BASE}/api/users/getAllUsers?page=${page}&limit=10&search=${search}`, {
         withCredentials: true
       });
       setUsers(res.data.allUsers);
-      setError('');
+      setTotalPages(res.data.totalPages);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch users');
+      toast.error(err.response?.data?.message || 'Failed to fetch users');
       console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setSearch(searchInput);
+    setPage(1); // Reset to first page on new search
   };
 
   const handleRoleChange = async (userId, newRole) => {
@@ -45,21 +55,22 @@ const AdminPanel = ({ user }) => {
       );
       setUsers(users.map(u => u._id === userId ? res.data.user : u));
       setEditingId(null);
-      setError('');
+      toast.success('User role updated successfully');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update role');
+      toast.error(err.response?.data?.message || 'Failed to update role');
     }
   };
 
-  /**
-   * Callback when deletion is successful
-   * Refresh the users list by removing the deleted user
-   */
   const handleDeleteSuccess = () => {
     if (deleteConfirm?.userId) {
+      toast.success('User deleted successfully');
       setUsers(users.filter(u => u._id !== deleteConfirm.userId));
       setDeleteConfirm(null);
-      setError('');
+      if (users.length === 1 && page > 1) {
+          setPage(page - 1);
+      } else {
+          fetchUsers();
+      }
     }
   };
 
@@ -73,18 +84,25 @@ const AdminPanel = ({ user }) => {
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2">Admin Dashboard</h1>
-          <p className="text-gray-400">Manage users and their roles</p>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 flex items-center justify-between">
-            <span>{error}</span>
-            <button onClick={() => setError('')} className="text-red-300 hover:text-red-200">✕</button>
+        <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2">Admin Dashboard</h1>
+            <p className="text-gray-400">Manage users and their roles</p>
           </div>
-        )}
+          
+          <form onSubmit={handleSearchSubmit} className="relative w-full md:w-64">
+            <input
+              type="text"
+              placeholder="Search by username or email..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg pl-3 pr-10 py-2 text-sm outline-none focus:border-emerald-400 transition"
+            />
+            <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-400 transition">
+              🔍
+            </button>
+          </form>
+        </div>
 
         {/* Loading State */}
         {loading ? (
@@ -97,7 +115,7 @@ const AdminPanel = ({ user }) => {
         ) : (
           <div className="relative">
             {/* Table Container */}
-            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl overflow-hidden mb-6">
               {users.length === 0 ? (
                 <div className="p-8 text-center">
                   <p className="text-gray-400">No users found</p>
@@ -127,7 +145,7 @@ const AdminPanel = ({ user }) => {
                               <div className="flex gap-2">
                                 <select
                                   defaultValue={u.role}
-                                  className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-400"
+                                  className="bg-[#1a231f] border border-white/20 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-400"
                                   onChange={(e) => handleRoleChange(u._id, e.target.value)}
                                 >
                                   <option value="user">User</option>
@@ -135,7 +153,7 @@ const AdminPanel = ({ user }) => {
                                 </select>
                                 <button
                                   onClick={() => setEditingId(null)}
-                                  className="text-gray-400 hover:text-white text-xs"
+                                  className="text-gray-400 hover:text-white text-xs cursor-pointer"
                                 >
                                   ✕
                                 </button>
@@ -166,14 +184,14 @@ const AdminPanel = ({ user }) => {
                               {editingId !== u._id && (
                                 <button
                                   onClick={() => setEditingId(u._id)}
-                                  className="px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded text-emerald-300 text-xs transition"
+                                  className="px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded text-emerald-300 text-xs transition cursor-pointer"
                                 >
                                   Edit Role
                                 </button>
                               )}
                               <button
                                 onClick={() => setDeleteConfirm({ userId: u._id, username: u.username })}
-                                className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded text-red-300 text-xs transition"
+                                className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded text-red-300 text-xs transition cursor-pointer"
                               >
                                 Delete
                               </button>
@@ -186,6 +204,30 @@ const AdminPanel = ({ user }) => {
                 </div>
               )}
             </div>
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4">
+                <button 
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
+                >
+                  Previous
+                </button>
+                <span className="text-gray-400 text-sm">
+                  Page <span className="text-emerald-400">{page}</span> of {totalPages}
+                </span>
+                <button 
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-4 py-2 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+            
           </div>
         )}
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast';
 
 const ForgotPassword = () => {
   const API_BASE = import.meta.env.VITE_API_URL;
@@ -18,8 +19,6 @@ const ForgotPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [loading,setLoading] = useState(false);
-  const [message,setMessage] = useState("");
-  const [error,setError] = useState("");
 
   const handleChange = (e) => {
     setResetData({
@@ -33,8 +32,6 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     setLoading(true);
-    setError("");
-    setMessage("");
 
     try {
 
@@ -45,11 +42,11 @@ const ForgotPassword = () => {
         }
       );
 
-      setMessage("OTP sent to your email");
+      toast.success("OTP sent to your email");
       setStep(2);
 
     } catch(err){
-      setError(
+      toast.error(
         err.response?.data?.message ||
         "Failed to send OTP"
       );
@@ -64,8 +61,6 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     setLoading(true);
-    setError("");
-    setMessage("");
 
     try{
 
@@ -77,11 +72,11 @@ const ForgotPassword = () => {
         }
       );
 
-      setMessage("OTP verified");
+      toast.success("OTP verified");
       setStep(3);
 
     } catch(err){
-      setError(
+      toast.error(
         err.response?.data?.message ||
         "Invalid OTP"
       );
@@ -99,14 +94,12 @@ const ForgotPassword = () => {
       resetData.newPassword !==
       resetData.confirmPassword
     ){
-      return setError(
+      return toast.error(
         "Passwords do not match"
       );
     }
 
     setLoading(true);
-    setError("");
-    setMessage("");
 
     try{
 
@@ -119,7 +112,7 @@ const ForgotPassword = () => {
         }
       );
 
-      setMessage(
+      toast.success(
        "Password reset successful"
       );
 
@@ -134,7 +127,7 @@ const ForgotPassword = () => {
       navigate('/login')
 
     } catch(err){
-      setError(
+      toast.error(
        err.response?.data?.message ||
        "Reset failed"
       );
@@ -159,19 +152,6 @@ const ForgotPassword = () => {
           </span>{" "}
           Password
         </h2>
-
-        {message && (
-         <p className="text-emerald-400 text-center mb-4 text-sm">
-          {message}
-         </p>
-        )}
-
-        {error && (
-         <p className="text-red-400 text-center mb-4 text-sm">
-          {error}
-         </p>
-        )}
-
 
         {/* STEP 1 EMAIL */}
         {step===1 && (

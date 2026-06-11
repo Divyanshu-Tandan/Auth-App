@@ -1,21 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const EditProfile = ({ user, setUser }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState(user?.username || '');
   const [email, setEmail] = useState(user?.email || '');
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const API_BASE = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setSuccessMessage('');
-    setErrorMessage('');
 
     try {
       const response = await axios.put(
@@ -28,14 +25,14 @@ const EditProfile = ({ user, setUser }) => {
 
       // Update user state
       setUser(response.data.user);
-      setSuccessMessage('Profile updated successfully!');
+      toast.success('Profile updated successfully!');
       
       // Redirect to home after 2 seconds
       setTimeout(() => {
         navigate('/');
       }, 2000);
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Failed to update profile');
+      toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
       setLoading(false);
     }
@@ -70,18 +67,6 @@ const EditProfile = ({ user, setUser }) => {
             <p className="text-gray-400 text-center mb-6 text-sm">
               Update your username and email
             </p>
-
-            {successMessage && (
-              <div className="mb-4 p-4 bg-emerald-500/20 border border-emerald-400/40 rounded-lg text-emerald-300 text-sm">
-                {successMessage}
-              </div>
-            )}
-
-            {errorMessage && (
-              <div className="mb-4 p-4 bg-red-500/20 border border-red-400/40 rounded-lg text-red-300 text-sm">
-                {errorMessage}
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>

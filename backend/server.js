@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import { connectDB } from './config/db.js'; // .js is necessary in db.js
 import cors from 'cors'
+import helmet from 'helmet'
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -15,10 +16,10 @@ app.use(cors({
     credentials: true
 }))
 app.use(express.json()); // This parse every req.body from every page
+app.use(helmet()); // Helmet helps secure your Express apps by setting various HTTP headers
+app.use(cookieParser()); // This parse every cookie from every page
 
-app.use(cookieParser());
-
-app.use('/api/users', authRoutes);
+app.use('/api/users', authRoutes); // this is the route for authentication
 
 app.get('/health', (req, res) => {
     res.send("The server is healthy 🙂");

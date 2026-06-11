@@ -12,6 +12,7 @@ import ForgotPassword from "./pages/ForgotPassword"
 import NotFound from "./pages/NotFound"
 import AdminPanel from "./pages/AdminPanel"
 import EditProfile from "./pages/EditProfile"
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -64,6 +65,40 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Toaster 
+        position="top-center" 
+        reverseOrder={false} 
+        toastOptions={{
+          style: {
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            color: '#fff',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#34d399',
+              secondary: '#0b0f0d',
+            },
+            style: {
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              boxShadow: '0 0 20px rgba(16, 185, 129, 0.15)',
+            }
+          },
+          error: {
+            iconTheme: {
+              primary: '#f87171',
+              secondary: '#0b0f0d',
+            },
+            style: {
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              boxShadow: '0 0 20px rgba(239, 68, 68, 0.15)',
+            }
+          },
+        }}
+      />
       <Navbar user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={<Home user={user} error={error} />} />
