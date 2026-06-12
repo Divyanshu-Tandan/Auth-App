@@ -144,14 +144,9 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
             .createHash("sha256")
             .update(otp)
             .digest("hex");
-
-        userExist.passwordResetOTP = hashedOTP;
-        userExist.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-
-        await userExist.save();
-
+            
         // Send email in the background (non-blocking)
-        transporter.sendMail({
+        const info = await transporter.sendMail({
             from: `"Auth App" <${process.env.EMAIL_USER}>`,
             to: userExist.email,
             subject: "Password Reset OTP",
@@ -161,15 +156,19 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
                 <h1>${otp}</h1>
                 <p>Expires in 10 minutes.</p>
             `
-        }).catch(err => {
-            console.error("Failed to send OTP email to", userExist.email, ":", err.message);
-        });
+        })
+
+        console.log(info)
+        
+        userExist.passwordResetOTP = hashedOTP;
+        userExist.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+        
+        await userExist.save();
+        
 
         // Respond immediately (don't wait for email)
         res.status(201).json({
             message: "OTP sent successfully",
-            userExist,
-            otp: hashedOTP,
         });
 
     } catch (err) {
