@@ -4,19 +4,14 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import { connectDB } from './config/db.js'; // .js is necessary in db.js
 import cors from 'cors'
+import dns from 'dns'
 import helmet from 'helmet'
 
 const PORT = process.env.PORT || 5000;
 const app = express();
 app.set("trust proxy", 1);
-
-// Validate email configuration
-if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn("⚠️  WARNING: EMAIL_USER or EMAIL_PASS environment variables are not set. OTP functionality will fail.");
-}
-
+dns.setDefaultResultOrder("ipv4first");
 connectDB();
-
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
