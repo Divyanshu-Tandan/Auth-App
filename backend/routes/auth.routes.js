@@ -133,8 +133,8 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
         const userExist = await User.findOne({ email });
 
         if (!userExist) {
-            return res.json({
-                message: "If account exists OTP was sent"
+            return res.status(404).json({
+                message: "User not found"
             })
         }
 
@@ -169,6 +169,7 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
         });
 
     } catch (err) {
+        console.error("OTP Send Error:", err);
         res.status(500).json({
             message: "Server error"
         });

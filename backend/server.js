@@ -9,6 +9,12 @@ import helmet from 'helmet'
 const PORT = process.env.PORT || 5000;
 const app = express();
 app.set("trust proxy", 1);
+
+// Validate email configuration
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn("⚠️  WARNING: EMAIL_USER or EMAIL_PASS environment variables are not set. OTP functionality will fail.");
+}
+
 connectDB();
 
 app.use(cors({
