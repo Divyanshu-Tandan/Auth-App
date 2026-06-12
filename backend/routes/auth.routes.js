@@ -150,7 +150,8 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
 
         await userExist.save();
 
-        await transporter.sendMail({
+        // Send email in the background (non-blocking)
+        transporter.sendMail({
             from: `"Auth App" <${process.env.EMAIL_USER}>`,
             to: userExist.email,
             subject: "Password Reset OTP",
@@ -160,8 +161,11 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
                 <h1>${otp}</h1>
                 <p>Expires in 10 minutes.</p>
             `
-        })
+        }).catch(err => {
+            console.error("Failed to send OTP email to", userExist.email, ":", err.message);
+        });
 
+        // Respond immediately (don't wait for email)
         res.status(201).json({
             message: "OTP sent successfully",
             userExist,
@@ -169,9 +173,10 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
         });
 
     } catch (err) {
-        console.error("OTP Send Error:", err);
+        console.error("OTP Send Error:", err.message);
         res.status(500).json({
-            message: "Server error"
+            message: "Server error",
+            error: err.message
         });
     }
 
