@@ -126,7 +126,7 @@ router.post("/logout", async (req, res) => {
     res.json({ message: "Logged out" });
 });
 
-router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
+router.post('/forgot-password/send-otp', async (req, res) => {
     try {
 
         const { email } = req.body;
@@ -144,10 +144,10 @@ router.post('/forgot-password/send-otp', requestLimiter, async (req, res) => {
             .createHash("sha256")
             .update(otp)
             .digest("hex");
-            
+
         userExist.passwordResetOTP = hashedOTP;
         userExist.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-        
+
         await userExist.save();
 
         // Send email and wait for it
