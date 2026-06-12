@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound"
 import AdminPanel from "./pages/AdminPanel"
 import EditProfile from "./pages/EditProfile"
 import { Toaster } from 'react-hot-toast';
+import AnimatedLogo from "./components/AnimatedLogo"
 
 function App() {
   const [user, setUser] = useState(null);
@@ -58,16 +59,21 @@ function App() {
         {/* Grid Background */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[60px_60px] opacity-30" />
 
-        <h2 className="text-4xl text-emerald-400 text-center">Loading...</h2>
+        <h2 className="relative z-10 text-emerald-400 flex flex-col justify-center items-center gap-2">
+          <AnimatedLogo />
+          <p className="text-lg">
+            Loading...
+          </p>
+        </h2>
       </div>
     )
   }
 
   return (
     <BrowserRouter>
-      <Toaster 
-        position="top-center" 
-        reverseOrder={false} 
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
         toastOptions={{
           style: {
             background: 'rgba(255, 255, 255, 0.05)',
