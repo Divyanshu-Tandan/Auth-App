@@ -1,4 +1,4 @@
-import mongoose from'mongoose';
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role:{
+    role: {
         type: String,
         enum: ["user", "admin"],
         default: "user",
@@ -25,22 +25,22 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    passwordResetOTP: String,
-    passwordResetExpires: Date
-}, { timestamps: true /* This is to save the time when a user was created or updated */});
+    resetPasswordToken: String,
+    resetPasswordExpire: Date
+}, { timestamps: true /* This is to save the time when a user was created or updated */ });
 
 // This runs before a user document is saved
-userSchema.pre("save", async function() {
-    if(!this.isModified("password")) {
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) {
         // next();
-        return ;
+        return;
     }
     const salt = await bcrypt.genSalt(10); // Here 10(default) is number of salt rounds.
     this.password = await bcrypt.hash(this.password, salt);
     // next();
 });
 
-userSchema.methods.matchPassword = async function(enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 }
 
