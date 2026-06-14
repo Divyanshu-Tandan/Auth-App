@@ -126,135 +126,120 @@ router.post("/logout", async (req, res) => {
     res.json({ message: "Logged out" });
 });
 
-router.post('/forgot-password/send-otp', async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
     try {
-
         const { email } = req.body;
         const userExist = await User.findOne({ email });
 
         if (!userExist) {
             return res.status(404).json({
                 message: "User not found"
-            })
+            });
         }
 
-        const otp = generateOTP();
+        // Generate a random reset token
+        const resetToken = crypto.randomBytes(20).toString("hex");
 
-        const hashedOTP = crypto
+        // Hash token and set to resetPasswordToken field
+        const resetPasswordToken = crypto
             .createHash("sha256")
-            .update(otp)
+            .update(resetToken)
             .digest("hex");
 
-        userExist.passwordResetOTP = hashedOTP;
-        userExist.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+        userExist.resetPasswordToken = resetPasswordToken;
+        userExist.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
 
         await userExist.save();
 
-        // Send email and wait for it
-        const info = await transporter.sendMail({
-            from: `"Auth App" <${process.env.EMAIL_USER}>`,
-            to: userExist.email,
-            subject: "Password Reset OTP",
-            html: `
-                <h2>Password Reset</h2>
-                <p>Your OTP is:</p>
-                <h1>${otp}</h1>
-                <p>Expires in 10 minutes.</p>
-            `
-        });
+        const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-        console.log("Email sent:", info.messageId);
+        const message = `
+            <h2>Password Reset Request</h2>
+            <p>You requested a password reset. Please click the button below to reset your password.</p>
+            <a href="${resetUrl}" style="background-color: #007BFF; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+            <p>This link will expire in 15 minutes.</p>
+            <p>If you did not request a password reset, please ignore this email.</p>
+        `;
 
-        // Respond ONLY after the email is successfully sent
-        res.status(201).json({
-            message: "OTP sent successfully",
-        });
+        try {
+            await transporter.sendMail({
+                from: `"Auth App" <${process.env.EMAIL_USER}>`,
+                to: userExist.email,
+                subject: "Password Reset Request",
+                html: message
+            });
 
+            res.status(200).json({
+                message: "Password reset link sent to email"
+            });
+        } catch (error) {
+            userExist.resetPasswordToken = undefined;
+            userExist.resetPasswordExpire = undefined;
+            await userExist.save({ validateBeforeSave: false });
+
+            return res.status(500).json({
+                message: "Email could not be sent",
+                error: error.message
+            });
+        }
     } catch (err) {
-        console.error("OTP Send Error:", err.message);
+        console.error("Forgot Password Error:", err.message);
         res.status(500).json({
             message: "Server error",
             error: err.message
         });
     }
-
 });
 
-router.post('/forgot-password/verify-otp', async (req, res) => {
+router.post('/reset-password/:token', async (req, res) => {
     try {
-
-        const { email, otp } = req.body
-        const hashedOTP = crypto
+        const resetPasswordToken = crypto
             .createHash("sha256")
-            .update(otp)
+            .update(req.params.token)
             .digest("hex");
 
         const user = await User.findOne({
-            email: email,
-            passwordResetOTP: hashedOTP,
-            passwordResetExpires: { $gt: Date.now() }
-        })
-
-        if (!user) {
-            return res.status(404).json({
-                message: "Invalid OTP"
-            })
-        }
-
-        res.status(200).json({
-            message: "OTP Verified"
-        })
-
-
-    } catch (error) {
-        return status(500).json({
-            message: error.message || "Server Error"
-        })
-    }
-})
-
-router.post('/forgot-password/reset-password', async (req, res) => {
-    try {
-
-        const { email, otp, newPassword } = req.body;
-
-        const hashedOTP = crypto
-            .createHash("sha256")
-            .update(otp)
-            .digest("hex");
-
-        const user = await User.findOne({
-            email: email,
-            passwordResetOTP: hashedOTP,
-            passwordResetExpires: {
-                $gt: Date.now()
-            }
-        })
+            resetPasswordToken,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
 
         if (!user) {
             return res.status(400).json({
-                message: "Invalid OTP"
-            })
+                message: "Invalid or expired reset token"
+            });
         }
 
-        user.password = newPassword;
+        const { password, confirmPassword } = req.body;
 
-        // invalidate OTP
-        user.passwordResetOTP = undefined;
-        user.passwordResetExpires = undefined;
+        if (!password || !confirmPassword) {
+            return res.status(400).json({
+                message: "Please provide password and confirmPassword"
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                message: "Passwords do not match"
+            });
+        }
+
+        user.password = password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
 
         await user.save();
 
         res.status(200).json({
-            message: "Password Updated Successfully"
-        })
-
+            message: "Password reset successful"
+        });
     } catch (error) {
-        return res.status(500).json({
-            message: error.message || "Server Error"
-        })
+        console.error("Reset Password Error:", error.message);
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
     }
-})
+});
 
 router.get('/me', protect, async (req, res) => {
     res.status(200).json(req.user);
