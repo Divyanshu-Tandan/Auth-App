@@ -8,25 +8,28 @@ if (dns.setDefaultResultOrder) {
 }
 
 const transporter = nodemailer.createTransport({
+  pool: true,
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth:{
+  port: 587,
+  secure: false, // Use STARTTLS
+  auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  // connectionTimeout: 5000,
-  // socketTimeout: 5000,
+  maxConnections: 5,
+  maxMessages: 100,
 });
 
 // Verify transporter on startup
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("❌ Email configuration error:", error.message);
-    console.error("Make sure EMAIL_USER and EMAIL_PASS environment variables are set correctly");
-  } else {
-    console.log("✅ Email service is ready");
-  }
-});
+if (process.env.NODE_ENV !== 'test') {
+  transporter.verify((error, success) => {
+    if (error) {
+      console.warn("⚠️ Email configuration warning:", error.message);
+      console.warn("Email service may not be fully available. Check EMAIL_USER and EMAIL_PASS environment variables.");
+    } else {
+      console.log("✅ Email service is ready and pooled");
+    }
+  });
+}
 
 export default transporter;

@@ -9,6 +9,7 @@ import Features from "./pages/Features"
 import TechStack from "./pages/TechStack"
 import About from "./pages/About"
 import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
 import NotFound from "./pages/NotFound"
 import AdminPanel from "./pages/AdminPanel"
 import EditProfile from "./pages/EditProfile"
@@ -110,6 +111,7 @@ function App() {
         <Route path="/" element={<Home user={user} error={error} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
         <Route path="/edit-profile" element={<EditProfile user={user} setUser={setUser} />} />
         <Route path="/features" element={<Features />} />
