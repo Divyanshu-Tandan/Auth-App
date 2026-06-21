@@ -129,7 +129,9 @@ router.post("/logout", async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
+        console.log("Forgot password route hit");
         const userExist = await User.findOne({ email });
+        console.log("User found:", !!userExist);
 
         if (!userExist) {
             return res.status(404).json({
