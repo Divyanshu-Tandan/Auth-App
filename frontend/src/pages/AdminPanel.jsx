@@ -67,9 +67,9 @@ const AdminPanel = ({ user }) => {
       setUsers(users.filter(u => u._id !== deleteConfirm.userId));
       setDeleteConfirm(null);
       if (users.length === 1 && page > 1) {
-          setPage(page - 1);
+        setPage(page - 1);
       } else {
-          fetchUsers();
+        fetchUsers();
       }
     }
   };
@@ -89,7 +89,7 @@ const AdminPanel = ({ user }) => {
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">Admin Dashboard</h1>
             <p className="text-gray-400">Manage users and their roles</p>
           </div>
-          
+
           <form onSubmit={handleSearchSubmit} className="relative w-full md:w-64">
             <input
               type="text"
@@ -137,78 +137,78 @@ const AdminPanel = ({ user }) => {
                       {users.map((u) => {
                         const isOnline = u.lastActive && (new Date() - new Date(u.lastActive)) / (1000 * 60) < 5;
                         return (
-                        <tr key={u._id} className="hover:bg-white/5 transition">
-                          <td className="px-4 sm:px-6 py-4 text-sm">{u.username}</td>
-                          <td className="px-4 sm:px-6 py-4 text-sm text-gray-400">{u.email}</td>
-                          <td className="px-4 sm:px-6 py-4 text-sm">
-                            {editingId === u._id ? (
+                          <tr key={u._id} className="hover:bg-white/5 transition">
+                            <td className="px-4 sm:px-6 py-4 text-sm">{u.username}</td>
+                            <td className="px-4 sm:px-6 py-4 text-sm text-gray-400">{u.email}</td>
+                            <td className="px-4 sm:px-6 py-4 text-sm">
+                              {editingId === u._id ? (
+                                <div className="flex gap-2">
+                                  <select
+                                    defaultValue={u.role}
+                                    className="bg-[#1a231f] border border-white/20 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-400"
+                                    onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                                  >
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                  </select>
+                                  <button
+                                    onClick={() => setEditingId(null)}
+                                    className="text-gray-400 hover:text-white text-xs cursor-pointer"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${u.role === 'admin'
+                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                    : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                                  }`}>
+                                  {u.role}
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 sm:px-6 py-4 text-sm">
+                              <div className="flex items-center gap-2">
+                                <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-gray-500'}`}></span>
+                                <span className={isOnline ? 'text-emerald-400' : 'text-gray-400'}>
+                                  {isOnline ? 'Online' : 'Offline'}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-4 sm:px-6 py-4 text-sm text-gray-400">
+                              {new Date(u.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-4 sm:px-6 py-4 text-sm">
                               <div className="flex gap-2">
-                                <select
-                                  defaultValue={u.role}
-                                  className="bg-[#1a231f] border border-white/20 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-400"
-                                  onChange={(e) => handleRoleChange(u._id, e.target.value)}
-                                >
-                                  <option value="user">User</option>
-                                  <option value="admin">Admin</option>
-                                </select>
+                                {editingId !== u._id && (
+                                  <button
+                                    onClick={() => setEditingId(u._id)}
+                                    className="px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded text-emerald-300 text-xs transition cursor-pointer"
+                                  >
+                                    Edit Role
+                                  </button>
+                                )}
                                 <button
-                                  onClick={() => setEditingId(null)}
-                                  className="text-gray-400 hover:text-white text-xs cursor-pointer"
+                                  onClick={() => setDeleteConfirm({ userId: u._id, username: u.username })}
+                                  className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded text-red-300 text-xs transition cursor-pointer"
                                 >
-                                  ✕
+                                  Delete
                                 </button>
                               </div>
-                            ) : (
-                              <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                                u.role === 'admin'
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                  : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                              }`}>
-                                {u.role}
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-4 sm:px-6 py-4 text-sm">
-                            <div className="flex items-center gap-2">
-                              <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-gray-500'}`}></span>
-                              <span className={isOnline ? 'text-emerald-400' : 'text-gray-400'}>
-                                {isOnline ? 'Online' : 'Offline'}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-4 sm:px-6 py-4 text-sm text-gray-400">
-                            {new Date(u.createdAt).toLocaleDateString()}
-                          </td>
-                          <td className="px-4 sm:px-6 py-4 text-sm">
-                            <div className="flex gap-2">
-                              {editingId !== u._id && (
-                                <button
-                                  onClick={() => setEditingId(u._id)}
-                                  className="px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded text-emerald-300 text-xs transition cursor-pointer"
-                                >
-                                  Edit Role
-                                </button>
-                              )}
-                              <button
-                                onClick={() => setDeleteConfirm({ userId: u._id, username: u.username })}
-                                className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded text-red-300 text-xs transition cursor-pointer"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );})}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
               )}
             </div>
-            
+
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="flex justify-center items-center gap-4">
-                <button 
+                <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
                   className="px-4 py-2 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
@@ -218,7 +218,7 @@ const AdminPanel = ({ user }) => {
                 <span className="text-gray-400 text-sm">
                   Page <span className="text-emerald-400">{page}</span> of {totalPages}
                 </span>
-                <button 
+                <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
                   className="px-4 py-2 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
@@ -227,7 +227,7 @@ const AdminPanel = ({ user }) => {
                 </button>
               </div>
             )}
-            
+
           </div>
         )}
 

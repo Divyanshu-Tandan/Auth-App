@@ -28,16 +28,16 @@ const DeleteModal = ({ isOpen, onClose, userId, username, onDeleteSuccess }) => 
     try {
       setIsLoading(true);
       setError('');
-      
+
       await axios.delete(`${API_BASE}/api/users/${userId}`, {
         withCredentials: true
       });
-      
+
       // Call parent callback to refresh user list
       if (onDeleteSuccess) {
         onDeleteSuccess();
       }
-      
+
       onClose();
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Failed to delete user';
